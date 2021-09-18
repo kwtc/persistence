@@ -1,7 +1,6 @@
 ﻿namespace Kwtc.Persistence
 {
     using System.Data;
-    using Microsoft.Data.SqlClient;
 #if NETSTANDARD
     using Microsoft.Data.SqlClient;
 #else
