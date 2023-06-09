@@ -3,24 +3,23 @@ namespace Kwtc.Persistence;
 using System.Data;
 using Microsoft.Data.Sqlite;
 
-public class InMemorySharedConnectionFactory : IInMemoryConnectionFactory, IDisposable
+public class SqliteSharedConnectionFactory : ISqliteSharedConnectionFactory, IDisposable
 {
-    private readonly SqliteConnection connection;
+    private readonly SqliteConnection masterConnection;
     private readonly string connectionString;
 
-    public InMemorySharedConnectionFactory()
+    public SqliteSharedConnectionFactory()
     {
         this.connectionString = $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
         SQLitePCL.Batteries.Init();
-        this.connection = new SqliteConnection(this.connectionString);
-
-        this.connection.Open();
+        this.masterConnection = new SqliteConnection(this.connectionString);
+        this.masterConnection.Open();
     }
 
     public void Dispose()
     {
-        this.connection.Close();
-        this.connection.Dispose();
+        this.masterConnection.Close();
+        this.masterConnection.Dispose();
     }
 
     public async Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default)
