@@ -3,6 +3,7 @@ namespace Kwtc.Persistence;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -15,9 +16,11 @@ public class MsSqlSharedConnectionFactory : IConnectionFactory
         this.configuration = configuration;
     }
 
-    public async Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default)
+    public async Task<IDbConnection> GetAsync(string connectionStringKey, CancellationToken cancellationToken = default)
     {
-        var connection = new SqlConnection(this.configuration.GetConnectionString("ConnectionString"));
+        Guard.IsNotNullOrEmpty(connectionStringKey, nameof(connectionStringKey));
+
+        var connection = new SqlConnection(this.configuration.GetSection("ConnectionStrings")[connectionStringKey]);
 
         try
         {

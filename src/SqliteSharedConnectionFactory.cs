@@ -1,18 +1,20 @@
 namespace Kwtc.Persistence;
 
 using System.Data;
+using CommunityToolkit.Diagnostics;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 
 public class SqliteSharedConnectionFactory : ISqliteSharedConnectionFactory, IDisposable
 {
+    private readonly IConfiguration configuration;
     private readonly SqliteConnection masterConnection;
-    private readonly string connectionString;
 
-    public SqliteSharedConnectionFactory()
+    public SqliteSharedConnectionFactory(IConfiguration configuration)
     {
-        this.connectionString = $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+        this.configuration = configuration;
         SQLitePCL.Batteries.Init();
-        this.masterConnection = new SqliteConnection(this.connectionString);
+        this.masterConnection = new SqliteConnection($"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared");
         this.masterConnection.Open();
     }
 
@@ -22,9 +24,11 @@ public class SqliteSharedConnectionFactory : ISqliteSharedConnectionFactory, IDi
         this.masterConnection.Dispose();
     }
 
-    public async Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default)
+    public async Task<IDbConnection> GetAsync(string connectionStringKey, CancellationToken cancellationToken = default)
     {
-        var connection = new SqliteConnection(this.connectionString);
+        Guard.IsNotNullOrEmpty(connectionStringKey, nameof(connectionStringKey));
+
+        var connection = new SqliteConnection(this.configuration.GetSection("ConnectionStrings")[connectionStringKey]);
         await connection.OpenAsync(cancellationToken);
         return connection;
     }
