@@ -2,36 +2,34 @@ namespace Kwtc.Persistence;
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using CommunityToolkit.Diagnostics;
 
 public static class TypeExtensions
 {
     public static string CreateTableScript(this Type type, string tableName)
     {
+        Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
+
         var fields = type.GetProperties().Select(p =>
             Attribute.IsDefined(p, typeof(KeyAttribute))
                 ? new KeyValuePair<string, Type>(p.Name, typeof(KeyAttribute))
                 : new KeyValuePair<string, Type>(p.Name, p.PropertyType)
-        );
+        ).ToList();
 
-        var script = new StringBuilder();
-        script.AppendLine("CREATE TABLE IF NOT EXISTS " + tableName);
-        script.AppendLine("(");
+        var script = new StringBuilder($"CREATE TABLE IF NOT EXISTS {tableName}(");
         foreach (var field in fields)
         {
-            var fieldType = DataTypeMapper.ContainsKey(field.Value) ? DataTypeMapper[field.Value] : "BIGINT";
+            var fieldType = DataTypeMapper.TryGetValue(field.Value, out var value) ? value : "BIGINT";
 
             script.Append("\"" + field.Key + "\" " + fieldType);
-
 
             if (field.Key != fields.Last().Key)
             {
                 script.Append(',');
             }
 
-            script.Append(Environment.NewLine);
+            script.Append(Environment.NewLine + ")");
         }
-
-        script.AppendLine(")");
 
         return script.ToString();
     }

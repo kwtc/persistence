@@ -1,19 +1,16 @@
-﻿namespace Kwtc.Persistence
+﻿namespace Kwtc.Persistence;
+
+using System;
+using System.Data;
+using CommunityToolkit.Diagnostics;
+
+public static class DataRecordExtensions
 {
-    using System;
-    using System.Data;
-
-    public static class DataRecordExtensions
+    public static T? ConvertTo<T>(this IDataRecord record, string column)
     {
-        public static T? ConvertTo<T>(this IDataRecord record, string column)
-        {
-            var obj = record[column];
-            if (obj == DBNull.Value)
-            {
-                return default;
-            }
+        Guard.IsNotNullOrEmpty(column, nameof(column));
 
-            return (T) obj;
-        }
+        var obj = record[column];
+        return obj == DBNull.Value ? default : (T)obj;
     }
 }
