@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kwtc.Persistence", "src\Kwtc.Persistence.csproj", "{6FD8E9F2-91DF-4A83-8B77-A9AE3374C10A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{04B3BE4E-D97A-46BD-9FA7-7C008007B328}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +18,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{04B3BE4E-D97A-46BD-9FA7-7C008007B328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04B3BE4E-D97A-46BD-9FA7-7C008007B328}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FD8E9F2-91DF-4A83-8B77-A9AE3374C10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6FD8E9F2-91DF-4A83-8B77-A9AE3374C10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FD8E9F2-91DF-4A83-8B77-A9AE3374C10A}.Debug|x64.ActiveCfg = Debug|Any CPU
