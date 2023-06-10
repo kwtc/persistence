@@ -455,3 +455,5 @@ $RECYCLE.BIN/
 
 # Nuke build nuget package output folder
 output
+
+identifier.sqlite
