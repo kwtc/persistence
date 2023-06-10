@@ -9,7 +9,7 @@
 
     <PropertyGroup>
         <PackageId>Kwtc.Persistence</PackageId>
-        <Version>0.0.3</Version>
+        <Version>0.0.4</Version>
         <Authors>Kasper Christiansen</Authors>
         <RepositoryUrl>https://github.com/kwtc/kwtc-persistence</RepositoryUrl>
     </PropertyGroup>

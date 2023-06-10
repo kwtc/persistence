@@ -8,7 +8,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
-public class MySqlConnectionFactory : IConnectionFactory
+public class MySqlConnectionFactory : ConnectionFactory
 {
     private readonly IConfiguration configuration;
 
@@ -17,11 +17,11 @@ public class MySqlConnectionFactory : IConnectionFactory
         this.configuration = configuration;
     }
 
-    public async Task<IDbConnection> GetAsync(string connectionStringKey, CancellationToken cancellationToken = default)
+    public override async Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default)
     {
-        Guard.IsNotNullOrEmpty(connectionStringKey, nameof(connectionStringKey));
+        Guard.IsNotNullOrEmpty(configKey, nameof(configKey));
 
-        var connection = new MySqlConnection(this.configuration.GetSection("ConnectionStrings")[connectionStringKey]);
+        var connection = new MySqlConnection(this.configuration.GetValue<string>(configKey));
 
         try
         {

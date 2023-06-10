@@ -5,7 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
-public class SqliteConnectionFactory : IConnectionFactory
+public class SqliteConnectionFactory : ConnectionFactory
 {
     private readonly IConfiguration configuration;
 
@@ -14,11 +14,11 @@ public class SqliteConnectionFactory : IConnectionFactory
         this.configuration = configuration;
     }
 
-    public async Task<IDbConnection> GetAsync(string connectionStringKey, CancellationToken cancellationToken = default)
+    public override async Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default)
     {
-        Guard.IsNotNullOrEmpty(connectionStringKey, nameof(connectionStringKey));
+        Guard.IsNotNullOrEmpty(configKey, nameof(configKey));
 
-        var connection = new SqliteConnection(this.configuration.GetSection("ConnectionStrings")[connectionStringKey]);
+        var connection = new SqliteConnection(this.configuration.GetValue<string>(configKey));
         await connection.OpenAsync(cancellationToken);
         return connection;
     }
