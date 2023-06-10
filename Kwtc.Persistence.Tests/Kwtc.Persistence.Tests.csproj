@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Kwtc.Persistence.csproj" />
+    <ProjectReference Include="..\Kwtc.Persistence\Kwtc.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
