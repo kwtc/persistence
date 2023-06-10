@@ -19,8 +19,8 @@ public class MsSqlSharedConnectionFactoryTests
     }
 
 
-    private MsSqlSharedConnectionFactory GetSut()
+    private MsSqlConnectionFactory GetSut()
     {
-        return new MsSqlSharedConnectionFactory(this.configuration.Object);
+        return new MsSqlConnectionFactory(this.configuration.Object);
     }
 }

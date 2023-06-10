@@ -19,8 +19,8 @@ public class SqliteSharedConnectionFactoryTests
     }
 
 
-    private SqliteSharedConnectionFactory GetSut()
+    private SqliteConnectionFactory GetSut()
     {
-        return new SqliteSharedConnectionFactory(this.configuration.Object);
+        return new SqliteConnectionFactory(this.configuration.Object);
     }
 }
