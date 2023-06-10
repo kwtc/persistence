@@ -7,11 +7,11 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-public class MsSqlSharedConnectionFactory : IConnectionFactory
+public class MsSqlConnectionFactory : IConnectionFactory
 {
     private readonly IConfiguration configuration;
 
-    public MsSqlSharedConnectionFactory(IConfiguration configuration)
+    public MsSqlConnectionFactory(IConfiguration configuration)
     {
         this.configuration = configuration;
     }

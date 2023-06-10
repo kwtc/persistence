@@ -27,16 +27,15 @@ public static class TypeExtensions
             {
                 script.Append(',');
             }
-
-            script.Append(Environment.NewLine + ")");
         }
+
+        script.Append(')');
 
         return script.ToString();
     }
 
     private static Dictionary<Type, string> DataTypeMapper => new()
     {
-        { typeof(KeyAttribute), "INTEGER PRIMARY KEY AUTOINCREMENT" },
         { typeof(int), "INTEGER" },
         { typeof(long), "BIGINT" },
         { typeof(string), "NVARCHAR(8000)" },

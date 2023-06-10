@@ -19,8 +19,8 @@ public class MySqlSharedConnectionFactoryTests
     }
 
 
-    private MySqlSharedConnectionFactory GetSut()
+    private MySqlConnectionFactory GetSut()
     {
-        return new MySqlSharedConnectionFactory(this.configuration.Object);
+        return new MySqlConnectionFactory(this.configuration.Object);
     }
 }

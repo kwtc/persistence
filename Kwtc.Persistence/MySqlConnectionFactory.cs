@@ -8,11 +8,11 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
-public class MySqlSharedConnectionFactory : IConnectionFactory
+public class MySqlConnectionFactory : IConnectionFactory
 {
     private readonly IConfiguration configuration;
 
-    public MySqlSharedConnectionFactory(IConfiguration configuration)
+    public MySqlConnectionFactory(IConfiguration configuration)
     {
         this.configuration = configuration;
     }
