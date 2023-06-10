@@ -7,7 +7,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-public class MsSqlConnectionFactory : IConnectionFactory
+public class MsSqlConnectionFactory : ConnectionFactory
 {
     private readonly IConfiguration configuration;
 
@@ -16,11 +16,11 @@ public class MsSqlConnectionFactory : IConnectionFactory
         this.configuration = configuration;
     }
 
-    public async Task<IDbConnection> GetAsync(string connectionStringKey, CancellationToken cancellationToken = default)
+    public override async Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default)
     {
-        Guard.IsNotNullOrEmpty(connectionStringKey, nameof(connectionStringKey));
+        Guard.IsNotNullOrEmpty(configKey, nameof(configKey));
 
-        var connection = new SqlConnection(this.configuration.GetSection("ConnectionStrings")[connectionStringKey]);
+        var connection = new SqlConnection(this.configuration.GetValue<string>(configKey));
 
         try
         {
