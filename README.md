@@ -31,7 +31,7 @@ this.connectionString = $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Share
 
 My reasoning being that this would be convenient since I expect it to only be used for testing purposes. If I'm wrong then a custom implementation can easily be created using the `SqliteConnectionFactory`.
 
-Since the connection is created when constructing the factory <b>remember to dispose</>.
+Since the connection is created when constructing the factory <b>remember to dispose</b>.
 
 ## <a name="mappers"></a>Sql type mappers
 I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. My solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
