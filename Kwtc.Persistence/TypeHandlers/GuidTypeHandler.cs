@@ -1,4 +1,4 @@
-﻿namespace Kwtc.Persistence;
+﻿namespace Kwtc.Persistence.TypeHandlers;
 
 using System.Data;
 using Dapper;
@@ -15,6 +15,6 @@ public class GuidTypeHandler : SqlMapper.TypeHandler<Guid>
 
     public override Guid Parse(object value)
     {
-        return new Guid(value.ToString() ?? string.Empty);
+        return new Guid((string)value);
     }
 }

@@ -7,17 +7,17 @@ using Moq;
 public class DbConnectionExtensionsTests
 {
     [Fact]
-    public void CreateTableIfNotExists_InvalidTableName_ShouldThrow()
+    public void CreateTable_InvalidTableName_ShouldThrow()
     {
         var sut = GetSut().Object;
 
-        var act = () => sut.CreateTableIfNotExists<object>(string.Empty);
+        var act = () => sut.CreateTable<object>(string.Empty);
 
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void CreateTableIfNotExists_ConnectionNotOpen_ShouldOpenConnection()
+    public void CreateTable_ConnectionNotOpen_ShouldOpenConnection()
     {
         var sut = GetSut();
         sut.Setup(connection => connection.State).Returns(ConnectionState.Closed);
@@ -25,23 +25,23 @@ public class DbConnectionExtensionsTests
         sut.Setup(connection => connection.Close());
         sut.Setup(connection => connection.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
-        sut.Object.CreateTableIfNotExists<DataModel>("TableName");
+        sut.Object.CreateTable<DataModel>("TableName");
 
         sut.Verify(connection => connection.Open(), Times.Exactly(2));
     }
 
     [Fact]
-    public void DropTableIfExists_InvalidTableName_ShouldThrow()
+    public void DropTable_InvalidTableName_ShouldThrow()
     {
         var sut = GetSut().Object;
 
-        var act = () => sut.DropTableIfExists(string.Empty);
+        var act = () => sut.DropTable(string.Empty);
 
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void DropTableIfExists_ConnectionNotOpen_ShouldOpenConnection()
+    public void DropTable_ConnectionNotOpen_ShouldOpenConnection()
     {
         var sut = GetSut();
         sut.Setup(connection => connection.State).Returns(ConnectionState.Closed);
@@ -49,7 +49,7 @@ public class DbConnectionExtensionsTests
         sut.Setup(connection => connection.Close());
         sut.Setup(connection => connection.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
-        sut.Object.CreateTableIfNotExists<DataModel>("TableName");
+        sut.Object.CreateTable<DataModel>("TableName");
 
         sut.Verify(connection => connection.Open(), Times.Exactly(2));
     }
