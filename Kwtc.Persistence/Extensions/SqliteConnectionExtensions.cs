@@ -39,7 +39,7 @@ public static class SqliteConnectionExtensions
             connection.Open();
         }
 
-        await connection.ExecuteAsync(CreateTableScript(typeof(T), tableName));
+        await connection.ExecuteAsync(new CommandDefinition(CreateTableScript(typeof(T), tableName), cancellationToken: cancellationToken));
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public static class SqliteConnectionExtensions
     /// <summary>
     /// Drops a table asynchronously if it exists.
     /// </summary>
-    public static void DropTableAsync(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default)
+    public static async Task DropTableAsync(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
 
@@ -69,7 +69,7 @@ public static class SqliteConnectionExtensions
             connection.Open();
         }
 
-        connection.ExecuteAsync($"DROP TABLE IF EXISTS {tableName}");
+        await connection.ExecuteAsync(new CommandDefinition($"DROP TABLE IF EXISTS {tableName}", cancellationToken: cancellationToken));
     }
 
     private static string CreateTableScript(Type type, string tableName)

@@ -10,24 +10,39 @@ public class SqliteConnectionExtensionsTests
     {
         var sut = GetSut();
 
-        var act = () => sut.CreateTable<object>(string.Empty);
+        var act = () => sut.CreateTable<TestModel>(string.Empty);
 
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void CreateTable_ConnectionNotOpen_ShouldOpenConnection()
+    public void CreateTable_ValidTableName_ShouldNotThrow()
     {
         var sut = GetSut();
-        // sut.Setup(connection => connection.GetType()).Returns(typeof(SqliteConnection));
-        // sut.Setup(connection => connection.State).Returns(ConnectionState.Closed);
-        // sut.Setup(connection => connection.Open());
-        // sut.Setup(connection => connection.Close());
-        // sut.Setup(connection => connection.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
-        sut.CreateTable<DataModel>("TableName");
+        var act = () => sut.CreateTable<TestModel>("ValidTableName");
 
-        // sut.Verify(connection => connection.Open(), Times.Exactly(2));
+        act.Should().NotThrow<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task CreateTableAsync_InvalidTableName_ShouldThrow()
+    {
+        var sut = GetSut();
+
+        var act = () => sut.CreateTableAsync<TestModel>(string.Empty);
+
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task CreateTableAsync_ValidTableName_ShouldNotThrow()
+    {
+        var sut = GetSut();
+
+        var act = () => sut.CreateTableAsync<TestModel>("ValidTableName");
+
+        await act.Should().NotThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -41,26 +56,41 @@ public class SqliteConnectionExtensionsTests
     }
 
     [Fact]
-    public void DropTable_ConnectionNotOpen_ShouldOpenConnection()
+    public void DropTable_ValidTableName_ShouldNotThrow()
     {
         var sut = GetSut();
-        // sut.Setup(connection => connection.State).Returns(ConnectionState.Closed);
-        // sut.Setup(connection => connection.Open());
-        // sut.Setup(connection => connection.Close());
-        // sut.Setup(connection => connection.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
-        sut.CreateTable<DataModel>("TableName");
+        var act = () => sut.DropTable("ValidTableName");
 
-        // sut.Verify(connection => connection.Open(), Times.Exactly(2));
+        act.Should().NotThrow<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task DropTableAsync_InvalidTableName_ShouldThrow()
+    {
+        var sut = GetSut();
+
+        var act = () => sut.DropTableAsync(string.Empty);
+
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task DropTableAsync_ValidTableName_ShouldNotThrow()
+    {
+        var sut = GetSut();
+
+        var act = () => sut.DropTableAsync("ValidTableName");
+
+        await act.Should().NotThrowAsync<ArgumentException>();
     }
 
     private static SqliteConnection GetSut()
     {
-        // Testing a static class is hard, so we'll just mock the IDbConnection
         return new SqliteConnection();
     }
 
-    private class DataModel
+    private class TestModel
     {
         public int Id { get; set; }
     }
