@@ -1,6 +1,7 @@
 ﻿namespace Kwtc.Persistence.Tests;
 
 using Dapper;
+using Factories;
 using FluentAssertions;
 using TypeHandlers;
 

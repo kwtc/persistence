@@ -1,5 +1,6 @@
 namespace Kwtc.Persistence.Tests;
 
+using Factories;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;

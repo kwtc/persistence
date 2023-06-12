@@ -1,6 +1,7 @@
 namespace Kwtc.Persistence.Tests;
 
 using System.Data;
+using Factories;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 

@@ -4,15 +4,16 @@ using System.Data;
 using System.Text;
 using CommunityToolkit.Diagnostics;
 using Dapper;
+using Microsoft.Data.Sqlite;
 
-public static class DbConnectionExtensions
+public static class SqliteConnectionExtensions
 {
     /// <summary>
     /// Creates a table if it does not exist.
     /// Will attempt to map the properties of the type to the appropriate SQL data type.
     /// If unable to find a mapping, the property will be ignored.
     /// </summary>
-    public static void CreateTable<T>(this IDbConnection connection, string tableName)
+    public static void CreateTable<T>(this SqliteConnection connection, string tableName)
     {
         Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
 
@@ -29,7 +30,7 @@ public static class DbConnectionExtensions
     /// Will attempt to map the properties of the type to the appropriate SQL data type.
     /// If unable to find a mapping, the property will be ignored.
     /// </summary>
-    public static async Task CreateTableAsync<T>(this IDbConnection connection, string tableName, CancellationToken cancellationToken = default)
+    public static async Task CreateTableAsync<T>(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
 
@@ -44,7 +45,7 @@ public static class DbConnectionExtensions
     /// <summary>
     /// Drops a table if it exists.
     /// </summary>
-    public static void DropTable(this IDbConnection connection, string tableName)
+    public static void DropTable(this SqliteConnection connection, string tableName)
     {
         Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
 
@@ -59,7 +60,7 @@ public static class DbConnectionExtensions
     /// <summary>
     /// Drops a table asynchronously if it exists.
     /// </summary>
-    public static void DropTableAsync(this IDbConnection connection, string tableName, CancellationToken cancellationToken = default)
+    public static void DropTableAsync(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default)
     {
         Guard.IsNotNullOrEmpty(tableName, nameof(tableName));
 

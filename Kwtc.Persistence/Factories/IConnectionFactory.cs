@@ -1,6 +1,6 @@
-using System.Data;
+namespace Kwtc.Persistence.Factories;
 
-namespace Kwtc.Persistence;
+using System.Data;
 
 public interface IConnectionFactory
 {

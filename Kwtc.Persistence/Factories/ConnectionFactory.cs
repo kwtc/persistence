@@ -1,4 +1,4 @@
-﻿namespace Kwtc.Persistence;
+﻿namespace Kwtc.Persistence.Factories;
 
 using System.Data;
 
