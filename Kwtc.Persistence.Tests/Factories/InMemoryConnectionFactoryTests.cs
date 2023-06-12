@@ -1,10 +1,10 @@
-namespace Kwtc.Persistence.Tests;
+namespace Kwtc.Persistence.Tests.Factories;
 
 using System.Data;
-using FluentAssertions;
+using Kwtc.Persistence.Factories;
 using Microsoft.Data.Sqlite;
 
-public class InMemorySqliteConnectionFactoryTests
+public class InMemoryConnectionFactoryTests
 {
     [Fact]
     public async Task GetAsync_WhenCalled_ShouldReturnConnection()
@@ -20,9 +20,9 @@ public class InMemorySqliteConnectionFactoryTests
         result.Should().BeAssignableTo<IDbConnection>();
         result.Should().BeOfType<SqliteConnection>();
     }
-    
-    private static InMemorySqliteConnectionFactory GetSut()
+
+    private static InMemoryConnectionFactory GetSut()
     {
-        return new InMemorySqliteConnectionFactory();
+        return new InMemoryConnectionFactory();
     }
 }

@@ -1,17 +1,16 @@
-namespace Kwtc.Persistence.Tests;
+namespace Kwtc.Persistence.Tests.Factories;
 
-using FluentAssertions;
+using Kwtc.Persistence.Factories;
 using Microsoft.Extensions.Configuration;
-using Moq;
 
-public class SqliteSharedConnectionFactoryTests
+public class MsSqlSharedConnectionFactoryTests
 {
     private readonly Mock<IConfiguration> configuration = new(MockBehavior.Strict);
 
     [Fact]
     public void GetAsync_InvalidKey_ShouldThrow()
     {
-        var sut = GetSut();
+        var sut = this.GetSut();
 
         var act = () => sut.GetAsync(string.Empty);
 
@@ -19,8 +18,8 @@ public class SqliteSharedConnectionFactoryTests
     }
 
 
-    private SqliteConnectionFactory GetSut()
+    private MsSqlConnectionFactory GetSut()
     {
-        return new SqliteConnectionFactory(this.configuration.Object);
+        return new MsSqlConnectionFactory(this.configuration.Object);
     }
 }
