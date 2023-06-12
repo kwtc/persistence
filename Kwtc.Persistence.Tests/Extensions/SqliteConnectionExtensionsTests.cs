@@ -1,9 +1,7 @@
-namespace Kwtc.Persistence.Tests;
+namespace Kwtc.Persistence.Tests.Extensions;
 
-using System.Data;
-using FluentAssertions;
 using Microsoft.Data.Sqlite;
-using Moq;
+using Persistence.Extensions;
 
 public class SqliteConnectionExtensionsTests
 {

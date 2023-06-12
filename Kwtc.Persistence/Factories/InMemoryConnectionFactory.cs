@@ -1,13 +1,14 @@
 ﻿namespace Kwtc.Persistence.Factories;
 
+using Database;
 using Microsoft.Data.Sqlite;
 
-public class InMemorySqliteConnectionFactory : IInMemoryConnectionFactory
+public class InMemoryConnectionFactory : IInMemoryConnectionFactory
 {
     private readonly IInMemoryDatabase database;
     private readonly string connectionString;
 
-    public InMemorySqliteConnectionFactory()
+    public InMemoryConnectionFactory()
     {
         this.database = new InMemoryDatabase();
         this.connectionString = database.ConnectionString;

@@ -1,30 +1,30 @@
-﻿namespace Kwtc.Persistence.Tests;
+﻿namespace Kwtc.Persistence.Tests.Database;
 
 using Dapper;
-using Factories;
-using FluentAssertions;
+using Kwtc.Persistence.Extensions;
+using Kwtc.Persistence.Factories;
 using TypeHandlers;
 
-public class InMemorySqliteTests
+public class InMemoryDatabaseTests
 {
-    public InMemorySqliteTests()
+    public InMemoryDatabaseTests()
     {
         TypeMapperHelper.RegisterDefaultHandlers();
     }
 
     [Fact]
-    public async Task Connection_CreateTableWithAllSupportedDataTypes_ShouldReturnModelWithValues()
+    public async Task Connection_CreateAndPopulateTableWithAllSupportedDataTypes_ShouldReturnModelWithValues()
     {
         const string tableName = "TestTable";
-        using var factory = new InMemorySqliteConnectionFactory();
+        using var factory = new InMemoryConnectionFactory();
         var connection = await factory.GetAsync(CancellationToken.None);
 
         var model = new TestModel
         {
             Bool = true,
-            Byte = 10,
-            Bytes = new byte[] { 10, 2, 3 },
-            Char = 'a',
+            Byte = 11,
+            Bytes = new byte[] { 10, 2, 34 },
+            Char = 'b',
             DateOnly = new DateOnly(2021, 1, 1),
             DateTime = DateTime.UtcNow,
             DateTimeOffset = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero),
@@ -32,16 +32,16 @@ public class InMemorySqliteTests
             Double = 1.12,
             Float = 1.12f,
             Guid = Guid.NewGuid(),
-            Int = 10,
-            Long = 10,
-            Sbyte = 10,
-            Short = 10,
+            Int = 13,
+            Long = 13,
+            Sbyte = 13,
+            Short = 13,
             String = "test",
             TimeOnly = TimeOnly.FromDateTime(DateTime.UtcNow),
             TimeSpan = TimeSpan.FromHours(1),
-            Uint = 10,
-            Ulong = 10,
-            Ushort = 10
+            Uint = 13,
+            Ulong = 13,
+            Ushort = 13
         };
 
         await connection.CreateTableAsync<TestModel>(tableName);

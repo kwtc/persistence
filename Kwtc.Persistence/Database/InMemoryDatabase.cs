@@ -1,4 +1,4 @@
-namespace Kwtc.Persistence;
+namespace Kwtc.Persistence.Database;
 
 using Microsoft.Data.Sqlite;
 

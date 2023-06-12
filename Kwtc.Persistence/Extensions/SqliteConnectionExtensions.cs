@@ -1,4 +1,4 @@
-namespace Kwtc.Persistence;
+namespace Kwtc.Persistence.Extensions;
 
 using System.Data;
 using System.Text;
