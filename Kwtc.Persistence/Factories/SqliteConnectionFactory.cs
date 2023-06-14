@@ -19,7 +19,16 @@ public class SqliteConnectionFactory : ConnectionFactory
         Guard.IsNotNullOrEmpty(configKey, nameof(configKey));
 
         var connection = new SqliteConnection(this.configuration.GetValue<string>(configKey));
-        await connection.OpenAsync(cancellationToken);
-        return connection;
+
+        try
+        {
+            await connection.OpenAsync(cancellationToken);
+            return connection;
+        }
+        catch (Exception)
+        {
+            await connection.DisposeAsync();
+            throw;
+        }
     }
 }
