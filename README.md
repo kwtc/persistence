@@ -1,7 +1,9 @@
-![example workflow](https://github.com/kwtc/persistence/actions/workflows/dotnet.yml/badge.svg)
+![example workflow](https://github.com/kwtc/persistence/actions/workflows/ci.yml/badge.svg)
 
 # Persistence
 A collection of utilities and extension methods for working with persistence in .NET using Dapper.
+
+# DOCUMENTATION UPDATE ON ITS WAY I PROMISE :D
 
 ## Features
 - [MsSql connection factory](#mssql)

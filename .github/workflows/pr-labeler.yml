@@ -1,4 +1,5 @@
 name: PR labeler
+
 on:
   pull_request:
     types: [opened]
@@ -16,5 +17,5 @@ jobs:
       - uses: TimonVS/pr-labeler-action@v4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/pr-labeler-config.yml
+          configuration-path: .github/config/pr-labeler-config.yml
           
