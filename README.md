@@ -1,30 +1,23 @@
-![example workflow](https://github.com/kwtc/persistence/actions/workflows/ci.yml/badge.svg)
+![.NET Build and Test](https://github.com/kwtc/persistence/actions/workflows/ci.yml/badge.svg)
 
 # Persistence
-A collection of utilities and extension methods for working with persistence in .NET using Dapper.
-
-# DOCUMENTATION UPDATE ON ITS WAY I PROMISE :D
+A collection of utilities for working with persistence in .NET using Dapper.
 
 ## Features
-- [MsSql connection factory](#mssql)
-- [MySql connection factory](#mysql)
-- [Sqlite connection factory](#sqlite)
-- [In memory connection factory (Sqlite)](#inmemory)
-- [Sql type mappers](#mappers)
+- [Connection factories](#factories)
+- [In-memory database (SQLite)](#inmemory)
+- [Dapper type mappers](#mappers)
 
 ## MsSql, MySql and Sqlite factory classes
 Implemented using Dapper and dependency injection of `Microsoft.Extensions.Configuration.IConfiguration` providing access to connection string configurations. Implements an `IConnectionFactory` interface that exposes two `GetAsync` methods. One creating a connection from a default connection string `ConnectionStrings:DefaultConnection` and the other offer the option to provide a custom configuration key with section support e.g. `ImportantStrings:BestConnectionEver`. 
 
-## <a name="mssql"></a>MsSql connection factory
 MsSql uses `Microsoft.Data.SqlClient` provider.
 
-## <a name="mysql"></a>MySql connection factory
 MySql uses `MySql.Data` provider.
 
-## <a name="sqlite"></a>Sqlite connection factory
 Sqlite uses `Microsoft.Data.Sqlite` provider.
 
-## <a name="inmemory"></a>In memory connection factory (Sqlite)
+## <a name="inmemory"></a>In-memory database (SQLite)
 The in-memory connection factory is implemented with Sqlite and differs from the other factories in that it implements another interface `IInMemoryConnectionFactory` which extends `IDisposable`. Here I opted for hardcoding a connection string in the factory constructor:
 
 ```c#
