@@ -5,19 +5,28 @@ A collection of utilities for working with persistence in .NET using Dapper.
 
 ## Features
 - [Connection factories](#factories)
-- [In-memory database (SQLite)](#inmemory)
+- [In-memory database (SQLite)](#in-memory)
 - [Dapper type mappers](#mappers)
 
-## MsSql, MySql and Sqlite factory classes
-Implemented using Dapper and dependency injection of `Microsoft.Extensions.Configuration.IConfiguration` providing access to connection string configurations. Implements an `IConnectionFactory` interface that exposes two `GetAsync` methods. One creating a connection from a default connection string `ConnectionStrings:DefaultConnection` and the other offer the option to provide a custom configuration key with section support e.g. `ImportantStrings:BestConnectionEver`. 
+## <a name="factories"></a>Connection factories
+Factory implementations for MySql, MsSql and SQLite connections implementing an `IConnectionFactory` interface which exposes the following methods:
 
-MsSql uses `Microsoft.Data.SqlClient` provider.
+```c#
+Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default);
+Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default);
+```
 
-MySql uses `MySql.Data` provider.
+They are designed to be used with dependency injection taking a `Microsoft.Extensions.Configuration.IConfiguration` object which provides access to connection string configuration. When getting connections you have the option to use pass a configuration key with section support  e.g. `ImportantStrings:BestConnectionEver` or use the default `ConnectionStrings:DefaultConnection`.
 
-Sqlite uses `Microsoft.Data.Sqlite` provider.
+The factories are implemented using the following data providers:
 
-## <a name="inmemory"></a>In-memory database (SQLite)
+| Connection type | Data provider |
+| ---------- | ---------- |
+| MsSql | `Microsoft.Data.SqlClient` |
+| MySql | `MySql.Data` |
+| SQLite | `Microsoft.Data.Sqlite` |
+
+## <a name="in-memory"></a>In-memory database (SQLite)
 The in-memory connection factory is implemented with Sqlite and differs from the other factories in that it implements another interface `IInMemoryConnectionFactory` which extends `IDisposable`. Here I opted for hardcoding a connection string in the factory constructor:
 
 ```c#
