@@ -9,14 +9,14 @@ A collection of utilities for working with persistence in .NET using Dapper.
 - [Dapper type mappers](#mappers)
 
 ## <a name="factories"></a>Connection factories
-Factory implementations for MySql, MsSql and SQLite connections implementing an `IConnectionFactory` interface which exposes the following methods:
+Factory implementations for MySql, MsSql and SQLite connections implementing an `IConnectionFactory` interface which expose the following methods:
 
 ```c#
 Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default);
 Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default);
 ```
 
-They are designed to be used with dependency injection taking a `Microsoft.Extensions.Configuration.IConfiguration` object which provides access to connection string configuration. When getting connections you have the option to use pass a configuration key with section support  e.g. `ImportantStrings:BestConnectionEver` or use the default `ConnectionStrings:DefaultConnection`.
+They are designed to be used with dependency injection taking a `Microsoft.Extensions.Configuration.IConfiguration` object which provides access to connection string configuration. When getting connections you have the options to use a configuration key with section support  e.g. `ImportantStrings:BestConnectionEver` or not which will default to using `ConnectionStrings:DefaultConnection`.
 
 The factories are implemented using the following data providers:
 
@@ -37,7 +37,7 @@ My reasoning being that this would be convenient since I expect it to only be us
 
 Since the connection is created when constructing the factory <b>remember to dispose</b>.
 
-## <a name="mappers"></a>Sql type mappers
+## <a name="mappers"></a>Dapper type mappers
 I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. My solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
 
 ```c#
@@ -53,3 +53,29 @@ These mappers are very basic and you may wish to customize. A helper method is i
 ```c#
 TypeMapperHelper.RegisterDefaultHandlers();
 ```
+
+## .NET to SQLite type
+
+| .NET | SQLite |
+| ---- | ------ |
+| bool | INTEGER |
+| byte | INTEGER |
+| byte[] | BLOB |
+| char | TEXT |
+| DateOnly | TEXT |
+| DateTime | TEXT |
+| DateTimeOffset | TEXT |
+| decimal | TEXT |
+| double | REAL |
+| Guid | TEXT |
+| short | INTEGER |
+| int | INTEGER |
+| long | INTEGER |
+| sbyte | INTEGER |
+| float | REAL |
+| string | TEXT |
+| TimeOnly | TEXT |
+| TimeSpan | TEXT |
+| ushort | INTEGER |
+| uint | INTEGER |
+| ulong | INTEGER |
