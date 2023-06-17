@@ -1,42 +1,101 @@
-![example workflow](https://github.com/kwtc/persistence/actions/workflows/ci.yml/badge.svg)
+![.NET Build and Test](https://github.com/kwtc/persistence/actions/workflows/ci.yml/badge.svg)
 
 # Persistence
-A collection of utilities and extension methods for working with persistence in .NET using Dapper.
-
-# DOCUMENTATION UPDATE ON ITS WAY I PROMISE :D
+A collection of utilities for working with persistence in .NET using Dapper.
 
 ## Features
-- [MsSql connection factory](#mssql)
-- [MySql connection factory](#mysql)
-- [Sqlite connection factory](#sqlite)
-- [In memory connection factory (Sqlite)](#inmemory)
-- [Sql type mappers](#mappers)
+- [Connection factories](#factories)
+- [In-memory database (SQLite)](#in-memory)
+- [Dapper type mappers](#mappers)
 
-## MsSql, MySql and Sqlite factory classes
-Implemented using Dapper and dependency injection of `Microsoft.Extensions.Configuration.IConfiguration` providing access to connection string configurations. Implements an `IConnectionFactory` interface that exposes two `GetAsync` methods. One creating a connection from a default connection string `ConnectionStrings:DefaultConnection` and the other offer the option to provide a custom configuration key with section support e.g. `ImportantStrings:BestConnectionEver`. 
-
-## <a name="mssql"></a>MsSql connection factory
-MsSql uses `Microsoft.Data.SqlClient` provider.
-
-## <a name="mysql"></a>MySql connection factory
-MySql uses `MySql.Data` provider.
-
-## <a name="sqlite"></a>Sqlite connection factory
-Sqlite uses `Microsoft.Data.Sqlite` provider.
-
-## <a name="inmemory"></a>In memory connection factory (Sqlite)
-The in-memory connection factory is implemented with Sqlite and differs from the other factories in that it implements another interface `IInMemoryConnectionFactory` which extends `IDisposable`. Here I opted for hardcoding a connection string in the factory constructor:
+## <a name="factories"></a>Connection factories
+Factory implementations for MySql, MsSql and SQLite connections implementing an `IConnectionFactory` interface which expose the following methods:
 
 ```c#
-this.connectionString = $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+Task<IDbConnection> GetAsync(CancellationToken cancellationToken = default);
+Task<IDbConnection> GetAsync(string configKey, CancellationToken cancellationToken = default);
 ```
 
-My reasoning being that this would be convenient since I expect it to only be used for testing purposes. If I'm wrong then a custom implementation can easily be created using the `SqliteConnectionFactory`.
+They are designed to be used with dependency injection taking a `Microsoft.Extensions.Configuration.IConfiguration` object which provides access to connection string configuration. When getting connections you have the options to use a configuration key with section support  e.g. `ImportantStrings:BestConnectionEver` or not which will default to using `ConnectionStrings:DefaultConnection`.
 
-Since the connection is created when constructing the factory <b>remember to dispose</b>.
+The factories are implemented using the following data providers:
 
-## <a name="mappers"></a>Sql type mappers
-I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. My solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
+| Connection type | Data provider |
+| ---------- | ---------- |
+| MsSql | `Microsoft.Data.SqlClient` |
+| MySql | `MySql.Data` |
+| SQLite | `Microsoft.Data.Sqlite` |
+
+## <a name="in-memory"></a>In-memory database (SQLite)
+Intended to be used for testing the In-memory database is built with SQLite and the factory class differs slightly from the others. It implements another interface `IInMemoryConnectionFactory` which extends `IDisposable` and exposes a single method:
+
+```c#
+Task<SqliteConnection> GetAsync(CancellationToken cancellationToken = default);
+```
+
+Here an actual SqliteConnection implementation is returned which is extended with convenience methods. When the factory is instantiated it itself instantiates a InMemoryDatabase object that needs to be disposed after use. The database is created with the following connection string.
+
+```c#
+$"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+```
+
+Extension methods for SqliteConnection are provided which facilitates easy creation of very basic test database tables.
+
+```c#
+void CreateTable<T>(this SqliteConnection connection, string tableName);
+Task CreateTableAsync<T>(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default);
+
+void DropTable(this SqliteConnection connection, string tableName);
+Task DropTableAsync(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default);
+```
+
+Could be extended in the future with attribute support for table keys etc.
+
+
+Example:
+```c#
+using var factory = new InMemoryConnectionFactory();
+var connection = await factory.GetAsync();
+
+await connection.CreateTableAsync<TestModel>("TestTable");
+
+public class TestModel
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+```
+
+In this example we instantiate an in-memory SQLite database and create a table with the columns defined in the `TestModel` class `Id` and `Title`.
+
+The following is a list of supported .NET types and the SQLite type that they are mapped to when using the `CreateTable` methods
+
+| .NET | SQLite |
+| ---- | ------ |
+| bool | INTEGER |
+| byte | INTEGER |
+| byte[] | BLOB |
+| char | TEXT |
+| DateOnly | TEXT |
+| DateTime | TEXT |
+| DateTimeOffset | TEXT |
+| decimal | TEXT |
+| double | REAL |
+| Guid | TEXT |
+| short | INTEGER |
+| int | INTEGER |
+| long | INTEGER |
+| sbyte | INTEGER |
+| float | REAL |
+| string | TEXT |
+| TimeOnly | TEXT |
+| TimeSpan | TEXT |
+| ushort | INTEGER |
+| uint | INTEGER |
+| ulong | INTEGER |
+
+## <a name="mappers"></a>Dapper type mappers
+I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. The solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
 
 ```c#
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
@@ -46,8 +105,10 @@ SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
 ```
 
-These mappers are very basic and you may wish to customize. A helper method is included that registers all the default implementations:
+These mappers are very basic and you may wish to customize if use for other than testing. A helper method is included that registers all the default implementations:
 
 ```c#
 TypeMapperHelper.RegisterDefaultHandlers();
 ```
+
+

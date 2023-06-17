@@ -81,11 +81,7 @@ public static class SqliteConnectionExtensions
         var script = new StringBuilder($"CREATE TABLE IF NOT EXISTS {tableName}(");
         foreach (var prop in props)
         {
-            if (!DataTypeMapper.TryGetValue(prop.Value, out var propType))
-            {
-                continue;
-            }
-
+            var propType = GetMappedType(prop.Value);
             script.Append("\"" + prop.Key + "\" " + propType);
 
             if (prop.Key != props.Last().Key)
@@ -99,28 +95,37 @@ public static class SqliteConnectionExtensions
         return script.ToString();
     }
 
-    private static Dictionary<Type, string> DataTypeMapper => new()
+    private static string GetMappedType(Type type)
     {
-        { typeof(bool), "INTEGER" },
-        { typeof(byte), "INTEGER" },
-        { typeof(byte[]), "BLOB" },
-        { typeof(char), "TEXT" },
-        { typeof(DateOnly), "TEXT" },
-        { typeof(DateTime), "TEXT" },
-        { typeof(DateTimeOffset), "TEXT" },
-        { typeof(decimal), "TEXT" },
-        { typeof(double), "REAL" },
-        { typeof(Guid), "TEXT" },
-        { typeof(short), "INTEGER" },
-        { typeof(int), "INTEGER" },
-        { typeof(long), "INTEGER" },
-        { typeof(sbyte), "INTEGER" },
-        { typeof(float), "REAL" },
-        { typeof(string), "TEXT" },
-        { typeof(TimeOnly), "TEXT" },
-        { typeof(TimeSpan), "TEXT" },
-        { typeof(ushort), "INTEGER" },
-        { typeof(uint), "INTEGER" },
-        { typeof(ulong), "INTEGER" }
-    };
+        switch (type)
+        {
+            case not null when type == typeof(bool):
+            case not null when type == typeof(byte):
+            case not null when type == typeof(short):
+            case not null when type == typeof(int):
+            case not null when type == typeof(long):
+            case not null when type == typeof(sbyte):
+            case not null when type == typeof(ushort):
+            case not null when type == typeof(uint):
+            case not null when type == typeof(ulong):
+                return "INTEGER";
+            case not null when type == typeof(char):
+            case not null when type == typeof(DateOnly):
+            case not null when type == typeof(DateTime):
+            case not null when type == typeof(DateTimeOffset):
+            case not null when type == typeof(decimal):
+            case not null when type == typeof(Guid):
+            case not null when type == typeof(string):
+            case not null when type == typeof(TimeOnly):
+            case not null when type == typeof(TimeSpan):
+                return "TEXT";
+            case not null when type == typeof(double):
+            case not null when type == typeof(float):
+                return "REAL";
+            case not null when type == typeof(byte[]):
+                return "BLOB";
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type));
+        }
+    }
 }
