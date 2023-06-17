@@ -27,34 +27,48 @@ The factories are implemented using the following data providers:
 | SQLite | `Microsoft.Data.Sqlite` |
 
 ## <a name="in-memory"></a>In-memory database (SQLite)
-The in-memory connection factory is implemented with Sqlite and differs from the other factories in that it implements another interface `IInMemoryConnectionFactory` which extends `IDisposable`. Here I opted for hardcoding a connection string in the factory constructor:
+Intended to be used for testing the In-memory database is built with SQLite and the factory class differs slightly from the others. It implements another interface `IInMemoryConnectionFactory` which extends `IDisposable` and exposes a single method:
 
 ```c#
-this.connectionString = $"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
+Task<SqliteConnection> GetAsync(CancellationToken cancellationToken = default);
 ```
 
-My reasoning being that this would be convenient since I expect it to only be used for testing purposes. If I'm wrong then a custom implementation can easily be created using the `SqliteConnectionFactory`.
-
-Since the connection is created when constructing the factory <b>remember to dispose</b>.
-
-## <a name="mappers"></a>Dapper type mappers
-I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. My solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
+Here an actual SqliteConnection implementation is returned which is extended with convenience methods. When the factory is instantiated it itself instantiates a InMemoryDatabase object that needs to be disposed after use. The database is created with the following connection string.
 
 ```c#
-SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
-SqlMapper.AddTypeHandler(new GuidTypeHandler());
-SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
-SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
-SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
+$"Data Source={Guid.NewGuid():N};Mode=Memory;Cache=Shared";
 ```
 
-These mappers are very basic and you may wish to customize. A helper method is included that registers all the default implementations:
+Extension methods for SqliteConnection are provided which facilitates easy creation of very basic test database tables.
 
 ```c#
-TypeMapperHelper.RegisterDefaultHandlers();
+void CreateTable<T>(this SqliteConnection connection, string tableName);
+Task CreateTableAsync<T>(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default);
+
+void DropTable(this SqliteConnection connection, string tableName);
+Task DropTableAsync(this SqliteConnection connection, string tableName, CancellationToken cancellationToken = default);
 ```
 
-## .NET to SQLite type
+Could be extended in the future with attribute support for table keys etc.
+
+
+Example:
+```c#
+using var factory = new InMemoryConnectionFactory();
+var connection = await factory.GetAsync();
+
+await connection.CreateTableAsync<TestModel>("TestTable");
+
+public class TestModel
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+```
+
+In this example we instantiate an in-memory SQLite database and create a table with the columns defined in the `TestModel` class `Id` and `Title`.
+
+The following is a list of supported .NET types and the SQLite type that they are mapped to when using the `CreateTable` methods
 
 | .NET | SQLite |
 | ---- | ------ |
@@ -79,3 +93,22 @@ TypeMapperHelper.RegisterDefaultHandlers();
 | ushort | INTEGER |
 | uint | INTEGER |
 | ulong | INTEGER |
+
+## <a name="mappers"></a>Dapper type mappers
+I ran into an issue where certain type conversions namely Guid and Date/Time types were not support by default using the `Microsoft.Data.Sqlite` provider. The solution was to implement some default type mappers using Dappers `SqlMapper` for the problematic types:
+
+```c#
+SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new GuidTypeHandler());
+SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
+SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
+SqlMapper.AddTypeHandler(new TimeSpanTypeHandler());
+```
+
+These mappers are very basic and you may wish to customize if use for other than testing. A helper method is included that registers all the default implementations:
+
+```c#
+TypeMapperHelper.RegisterDefaultHandlers();
+```
+
+
