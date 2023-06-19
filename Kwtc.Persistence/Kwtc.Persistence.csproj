@@ -9,9 +9,11 @@
 
     <PropertyGroup>
         <PackageId>Kwtc.Persistence</PackageId>
-        <Version>2.0.1</Version>
         <Authors>Kasper Christiansen</Authors>
-        <RepositoryUrl>https://github.com/kwtc/kwtc-persistence</RepositoryUrl>
+        <RepositoryUrl>https://github.com/kwtc/persistence</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/kwtc/persistence</PackageProjectUrl>
+        <Description>A collection of utilities for working with persistence in .NET using Dapper.</Description>
+        <PackageTags>MySQL SQLite MSSQL Dapper In-memory-database Dbconnection</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
